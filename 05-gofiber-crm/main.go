@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	
 	"github.com/jinzhu/gorm"
 	"github.com/gofiber/fiber"
