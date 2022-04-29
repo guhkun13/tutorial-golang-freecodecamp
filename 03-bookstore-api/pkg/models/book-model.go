@@ -1,6 +1,7 @@
 package models
 
 import (
+  "fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/guhkun13/tutorial/freeCodeCamp/03-bookstore-api/pkg/config"
 )
@@ -34,7 +35,9 @@ func GetAllBooks() []Book {
 
 func GetBookById(Id int64) (*Book, *gorm.DB){
 	var getBook Book 
-	db := db.Where("ID=?", Id).Find(&getBook)
+	if db := db.Where("ID=?", Id).First(&getBook); db.Error != nil {
+    fmt.Println("object not found!!!")
+  }
 	return &getBook, db
 }
 
