@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	
+
 	"github.com/jinzhu/gorm"
 	"github.com/gofiber/fiber"
+
 	"github.com/guhkun13/tutorial/freeCodeCamp/05-gofiber-crm/database"
 	"github.com/guhkun13/tutorial/freeCodeCamp/05-gofiber-crm/lead"
 )
