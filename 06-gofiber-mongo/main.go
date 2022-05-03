@@ -69,6 +69,36 @@ func getEmployees(c *fiber.Ctx) error {
 	return c.JSON(employees)
 }
 
+func getEmployee(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	
+	objID, err := primitive.ObjectIDFromHex(idParam)
+	
+	if err != nil {
+		return c.Status(400).SendString(err.Error())
+	}
+	
+	query := bson.D{{Key: "_id", Value: objID}}
+	
+	var employee Employee
+	collection := mg.DB.Collection("employees")
+	result := collection.FindOne(c.Context(), query)
+	
+	fmt.Printf("result : %v \n", result)
+	
+	result.Decode(&employee)
+	
+	fmt.Printf("found employee : %v \n", employee)
+	if employee.ID == "" {
+		return c.Status(404).SendString("Data not found")
+	}
+
+	employee.ID = idParam
+	
+	return c.Status(200).JSON(employee)
+}
+
+
 func createEmployee(c *fiber.Ctx) error {
 	
 	collection := mg.DB.Collection("employees")
@@ -156,7 +186,7 @@ func deleteEmployee(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).SendString(err.Error())
 	}
-
+	
 	query := bson.D{
 		{
 			Key: "_id", Value: employeeID,
@@ -173,14 +203,13 @@ func deleteEmployee(c *fiber.Ctx) error {
 		return c.Status(404).SendString("Data not found")
 	}
 	
-	return c.SendStatus(200)
-	
+	return c.SendStatus(200)	
 }
 
 func setupRoutes(app *fiber.App) {
 	app.Get("/employees", getEmployees)
 	app.Post("/employee", createEmployee)
-	// app.Get("/employee/:id", getEmployee)
+	app.Get("/employee/:id", getEmployee)
 	app.Delete("/employee/:id", deleteEmployee)
 	app.Put("/employee/:id", updateEmployee)
 }
